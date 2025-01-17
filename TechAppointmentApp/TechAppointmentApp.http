@@ -1,0 +1,6 @@
+@TechAppointmentApp_HostAddress = http://localhost:5028
+
+GET {{TechAppointmentApp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
