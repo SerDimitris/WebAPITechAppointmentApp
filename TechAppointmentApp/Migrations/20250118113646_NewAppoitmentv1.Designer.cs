@@ -12,8 +12,8 @@ using TechAppointmentApp.Data;
 namespace TechAppointmentApp.Migrations
 {
     [DbContext(typeof(TechAppointmentAppDbContext))]
-    [Migration("20250117175310_AppointmentTableAddedFixedv6")]
-    partial class AppointmentTableAddedFixedv6
+    [Migration("20250118113646_NewAppoitmentv1")]
+    partial class NewAppoitmentv1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,9 +100,6 @@ namespace TechAppointmentApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("AreaId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("AreadId")
                         .HasColumnType("int");
 
@@ -124,7 +121,7 @@ namespace TechAppointmentApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AreaId");
+                    b.HasIndex("AreadId");
 
                     b.HasIndex("ServiceId");
 
@@ -264,7 +261,7 @@ namespace TechAppointmentApp.Migrations
                     b.HasOne("TechAppointmentApp.Data.Technician", "Technician")
                         .WithMany("Appointments")
                         .HasForeignKey("TechnicianId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Customer");
@@ -276,11 +273,13 @@ namespace TechAppointmentApp.Migrations
                 {
                     b.HasOne("TechAppointmentApp.Data.Area", "Area")
                         .WithMany("Customers")
-                        .HasForeignKey("AreaId");
+                        .HasForeignKey("AreadId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("TechAppointmentApp.Data.Service", "Service")
                         .WithMany("Customers")
-                        .HasForeignKey("ServiceId");
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("TechAppointmentApp.Data.User", "User")
                         .WithOne("Customer")
@@ -299,11 +298,13 @@ namespace TechAppointmentApp.Migrations
                 {
                     b.HasOne("TechAppointmentApp.Data.Area", "Area")
                         .WithMany("Technicians")
-                        .HasForeignKey("AreaId");
+                        .HasForeignKey("AreaId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("TechAppointmentApp.Data.Service", "Service")
                         .WithMany("Technicians")
-                        .HasForeignKey("ServiceId");
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("TechAppointmentApp.Data.User", "User")
                         .WithOne("Technician")

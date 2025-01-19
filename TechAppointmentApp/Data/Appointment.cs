@@ -9,8 +9,8 @@
         public int? ServiceId { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string Status { get; set; } = "Scheduled";
-        public virtual Customer? Customer { get; set; }
-        public virtual Technician? Technician { get; set; }
+        public virtual Customer Customer { get; set; } = null!;
+        public virtual Technician Technician { get; set; } = null!;
 
     }
 }

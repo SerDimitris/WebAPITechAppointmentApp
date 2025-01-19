@@ -97,9 +97,6 @@ namespace TechAppointmentApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("AreaId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("AreadId")
                         .HasColumnType("int");
 
@@ -121,7 +118,7 @@ namespace TechAppointmentApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AreaId");
+                    b.HasIndex("AreadId");
 
                     b.HasIndex("ServiceId");
 
@@ -273,11 +270,13 @@ namespace TechAppointmentApp.Migrations
                 {
                     b.HasOne("TechAppointmentApp.Data.Area", "Area")
                         .WithMany("Customers")
-                        .HasForeignKey("AreaId");
+                        .HasForeignKey("AreadId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("TechAppointmentApp.Data.Service", "Service")
                         .WithMany("Customers")
-                        .HasForeignKey("ServiceId");
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("TechAppointmentApp.Data.User", "User")
                         .WithOne("Customer")
@@ -296,11 +295,13 @@ namespace TechAppointmentApp.Migrations
                 {
                     b.HasOne("TechAppointmentApp.Data.Area", "Area")
                         .WithMany("Technicians")
-                        .HasForeignKey("AreaId");
+                        .HasForeignKey("AreaId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("TechAppointmentApp.Data.Service", "Service")
                         .WithMany("Technicians")
-                        .HasForeignKey("ServiceId");
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("TechAppointmentApp.Data.User", "User")
                         .WithOne("Technician")

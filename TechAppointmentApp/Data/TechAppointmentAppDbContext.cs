@@ -47,6 +47,10 @@ namespace TechAppointmentApp.Data
                 .HasDefaultValueSql("GETDATE()");
 
                 entity.HasIndex(e => e.UserId, "IX_Customer_UserId").IsUnique();
+
+                entity.HasOne(c => c.Area).WithMany(a => a.Customers).HasForeignKey(c => c.AreadId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(c => c.Service).WithMany(s => s.Customers).HasForeignKey(c => c.ServiceId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(c => c.User).WithOne(u => u.Customer).HasForeignKey<Customer>(c => c.UserId).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Technician>(entity =>
@@ -62,13 +66,19 @@ namespace TechAppointmentApp.Data
                 .HasDefaultValueSql("GETDATE()");
 
                 entity.HasIndex(e => e.UserId, "IX_Technician_UserId").IsUnique();
+
+                entity.HasOne(t => t.Area).WithMany(a => a.Technicians).HasForeignKey(t => t.AreaId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(t => t.Service).WithMany(s => s.Technicians).HasForeignKey(t => t.ServiceId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(t => t.User).WithOne(u => u.Technician).HasForeignKey<Technician>(t => t.UserId).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Service>(entity =>
             {
                 entity.ToTable("Services");
+                entity.Property(e => e.UserService)
+                .HasConversion<string>();
 
-                entity.HasIndex(e => e.ServiceName, "IX_Services_ServiceName");
+                entity.HasIndex(e => e.UserService, "IX_Services_UserServices");
             });
 
             modelBuilder.Entity<Area>(entity =>
@@ -83,6 +93,7 @@ namespace TechAppointmentApp.Data
                 entity.ToTable("Appointments");
 
                 entity.HasIndex(e => e.AppointmentDate, "IX_Appointments_AppointmentDate");
+                entity.HasIndex(e => e.Status, "IX_Appointments_AppointmentStatus");
 
                 entity.HasOne(a => a.Customer)
                 .WithMany(c => c.Appointments)

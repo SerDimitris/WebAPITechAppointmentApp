@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using TechAppointmentApp.Data;
+using TechAppointmentApp.Repositories;
 
 namespace TechAppointmentApp
 {
@@ -13,6 +14,9 @@ namespace TechAppointmentApp
 
             var connString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<TechAppointmentAppDbContext>(options => options.UseSqlServer(connString));
+
+            builder.Services.AddRepositories();
+
 
             // Add services to the container.
 
