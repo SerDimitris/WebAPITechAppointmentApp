@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TechAppointmentApp.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class NewAppoitmentv1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -68,7 +68,6 @@ namespace TechAppointmentApp.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     AreadId = table.Column<int>(type: "int", nullable: true),
                     ServiceId = table.Column<int>(type: "int", nullable: true),
-                    AreaId = table.Column<int>(type: "int", nullable: true),
                     InsertedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
@@ -76,8 +75,8 @@ namespace TechAppointmentApp.Migrations
                 {
                     table.PrimaryKey("PK_Customers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Customers_Areas_AreaId",
-                        column: x => x.AreaId,
+                        name: "FK_Customers_Areas_AreadId",
+                        column: x => x.AreadId,
                         principalTable: "Areas",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -126,6 +125,51 @@ namespace TechAppointmentApp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Appointments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    TechnicianId = table.Column<int>(type: "int", nullable: false),
+                    AreaId = table.Column<int>(type: "int", nullable: true),
+                    ServiceId = table.Column<int>(type: "int", nullable: true),
+                    AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InsertedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Appointments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Appointments_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Appointments_Technicians_TechnicianId",
+                        column: x => x.TechnicianId,
+                        principalTable: "Technicians",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_AppointmentDate",
+                table: "Appointments",
+                column: "AppointmentDate");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_CustomerId",
+                table: "Appointments",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_TechnicianId",
+                table: "Appointments",
+                column: "TechnicianId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Areas_AreaName",
                 table: "Areas",
@@ -138,9 +182,9 @@ namespace TechAppointmentApp.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Customers_AreaId",
+                name: "IX_Customers_AreadId",
                 table: "Customers",
-                column: "AreaId");
+                column: "AreadId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_ServiceId",
@@ -190,6 +234,9 @@ namespace TechAppointmentApp.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Appointments");
+
             migrationBuilder.DropTable(
                 name: "Customers");
 
