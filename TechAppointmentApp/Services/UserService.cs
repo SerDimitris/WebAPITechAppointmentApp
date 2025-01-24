@@ -19,14 +19,51 @@ namespace TechAppointmentApp.Services
             _logger = logger;
         }
 
-        public Task<List<User>> GetAllUsersFiltered(int pagaNumber, int pageSize, UserFiltersDTO userFiltersDTO)
+        public async Task<List<User>> GetAllUsersFiltered(int pagaNumber, int pageSize, UserFiltersDTO userFiltersDTO)
         {
-            throw new NotImplementedException();
+            List<User> users = new List<User>();
+            List<Func<User, bool>> predicates = new();
+
+            try
+            {
+                if (!string.IsNullOrEmpty(userFiltersDTO.UserName))
+                {
+                    predicates.Add(u => u.Username == userFiltersDTO.UserName);
+                }
+                if (!string.IsNullOrEmpty(userFiltersDTO.Email))
+                {
+                    predicates.Add(u => u.Email == userFiltersDTO.Email);
+                }
+                if (!string.IsNullOrEmpty(userFiltersDTO.UserRole))
+                {
+                    predicates.Add(u => u.UserRole.ToString() == userFiltersDTO.UserRole);
+                }
+
+                users = await _unitOfWork.UserRepository.GetAllUsersFilteredPaginatedAsync(pagaNumber, pageSize, predicates);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("{Message}{Exception}", ex.Message, ex.StackTrace);
+                throw;
+            }
+            return users;
         }
 
-        public Task<User?> GetUserByUsernameAsync(string username)
+
+        public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            throw new NotImplementedException();
+            User? user = null;
+
+            try
+            {
+                user = await _unitOfWork.UserRepository.GetByUserName(username);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("{Message}{Exception}", ex.Message, ex.StackTrace);
+            }
+            return user;
         }
 
         public async Task<User?> VerifyAndGetUserAsync(UserLoginDTO credentials)

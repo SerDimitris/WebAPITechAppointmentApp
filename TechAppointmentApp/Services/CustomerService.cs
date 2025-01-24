@@ -113,16 +113,12 @@ namespace TechAppointmentApp.Services
             };
         }
 
-        private Customer ExtractCustomer (CustomerSignupDTO signupDTO)
+        private Customer ExtractCustomer(CustomerSignupDTO signupDTO)
         {
-            var service = _unitOfWork.ServiceRepository
-                .GetAllAsync();
-                
-
             return new Customer()
             {
                 PhoneNumber = signupDTO.PhoneNumber!,
-                ServiceId = service?.Id,
+                ServiceId = (int?)signupDTO.Service,
             };
         }
     }
