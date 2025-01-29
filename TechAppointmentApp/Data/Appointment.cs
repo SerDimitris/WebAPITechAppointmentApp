@@ -16,5 +16,6 @@ namespace TechAppointmentApp.Data
         public virtual Area? Area { get; set; }
         public virtual Service? Service { get; set; }
 
+
     }
 }

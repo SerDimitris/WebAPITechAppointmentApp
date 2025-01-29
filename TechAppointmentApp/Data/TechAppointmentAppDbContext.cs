@@ -53,6 +53,7 @@ namespace TechAppointmentApp.Data
                 //entity.HasOne(c => c.Area).WithMany(a => a.Customers).HasForeignKey(c => c.AreadId).OnDelete(DeleteBehavior.NoAction);
                 //entity.HasOne(c => c.Service).WithMany(s => s.Customers).HasForeignKey(c => c.ServiceId).OnDelete(DeleteBehavior.NoAction);
                 //entity.HasOne(c => c.User).WithOne(u => u.Customer).HasForeignKey<Customer>(c => c.UserId).OnDelete(DeleteBehavior.Cascade);
+
             });
 
             modelBuilder.Entity<Technician>(entity =>
@@ -69,9 +70,11 @@ namespace TechAppointmentApp.Data
 
                 entity.HasIndex(e => e.UserId, "IX_Technician_UserId").IsUnique();
 
+
                 //entity.HasOne(t => t.Area).WithMany(a => a.Technicians).HasForeignKey(t => t.AreaId).OnDelete(DeleteBehavior.NoAction);
                 //entity.HasOne(t => t.Service).WithMany(s => s.Technicians).HasForeignKey(t => t.ServiceId).OnDelete(DeleteBehavior.NoAction);
                 //entity.HasOne(t => t.User).WithOne(u => u.Technician).HasForeignKey<Technician>(t => t.UserId).OnDelete(DeleteBehavior.Cascade);
+
             });
 
             modelBuilder.Entity<Service>(entity =>
