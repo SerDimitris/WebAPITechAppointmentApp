@@ -13,6 +13,7 @@ namespace TechAppointmentApp.Data
         public DbSet<Technician> Technicians { get; set; }
         public DbSet<Area> Areas { get; set; }
         public DbSet<Service> Services { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -98,15 +99,15 @@ namespace TechAppointmentApp.Data
                 entity.HasIndex(e => e.AppointmentDate, "IX_Appointments_AppointmentDate");
                 entity.HasIndex(e => e.Status, "IX_Appointments_AppointmentStatus");
 
-                //entity.HasOne(a => a.Customer)
-                //.WithMany(c => c.Appointments)
-                //.HasForeignKey(a => a.CustomerId)
-                //.OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(a => a.Customer)
+                .WithMany(c => c.Appointments)
+                .HasForeignKey(a => a.CustomerId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-                //entity.HasOne(a => a.Technician)
-                //.WithMany(t => t.Appointments)
-                //.HasForeignKey(a => a.TechnicianId)
-                //.OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(a => a.Technician)
+                .WithMany(t => t.Appointments)
+                .HasForeignKey(a => a.TechnicianId)
+                .OnDelete(DeleteBehavior.NoAction);
             });
         }
     }

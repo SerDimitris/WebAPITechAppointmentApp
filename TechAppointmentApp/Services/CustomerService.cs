@@ -10,55 +10,15 @@ namespace TechAppointmentApp.Services
 {
     public class CustomerService : ICustomerService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        private readonly ILogger<CustomerService> _logger;
+        private readonly IUnitOfWork? _unitOfWork;
+        private readonly IMapper? _mapper;
+        private readonly ILogger<UserService>? _logger;
 
-        public CustomerService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<CustomerService> logger)
+        public CustomerService(IUnitOfWork? unitOfWork, IMapper? mapper, ILogger<UserService>? logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
-        }
-
-        public async Task<List<User>> GetAllUsersCustomersAsync()
-        {
-            List<User> usersCustomers = new();
-            try
-            {
-                usersCustomers = await _unitOfWork.CustomerRepository.GetAllUsersCustomersAsync();
-                _logger.LogInformation("{Message}", "All customers returned.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("{Message}{Exception}", ex.Message, ex.StackTrace);
-            }
-            return usersCustomers;
-        }
-
-        public async Task<List<User>> GetAllUsersCustomersAsync(int pageNumber, int pageSize)
-        {
-            List<User> usersCustomers = new();
-            try
-            {
-                usersCustomers = await _unitOfWork.CustomerRepository.GetAllUsersCustomersPaginatedAsync(pageNumber, pageSize);
-                _logger.LogInformation("{Message}", "All customers returned.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("{Message}{Exception}", ex.Message, ex.StackTrace);
-            }
-            return usersCustomers;
-        }
-
-        public async Task<Customer?> GetCustomerByPhoneNumberAsync(string phoneNumber)
-        {
-            return await _unitOfWork.CustomerRepository.GetCustomerByPhoneNmumberAsync(phoneNumber);
-        }
-
-        public async Task<int> GetCustomerCountAsync()
-        {
-            return await _unitOfWork.CustomerRepository.GetCountAsync();
         }
 
         public async Task SignUpUserAsync(CustomerSignupDTO request)
@@ -69,7 +29,7 @@ namespace TechAppointmentApp.Services
             try
             {
                 user = ExtractUser(request);
-                User? existingUser = await _unitOfWork.UserRepository.GetByUserName(user.Username);
+                User? existingUser = await _unitOfWork.UserRepository.GetByUserNameAsync(user.Username);
 
                 if (existingUser != null)
                 {
@@ -80,14 +40,14 @@ namespace TechAppointmentApp.Services
                 await _unitOfWork.UserRepository.AddAsync(user);
 
                 customer = ExtractCustomer(request);
-                if (await _unitOfWork.CustomerRepository
-                    .GetCustomerByPhoneNmumberAsync(customer.PhoneNumber) is not null)
+                if (await _unitOfWork.UserRepository
+                    .GetByPhoneNumberAsync(user.PhoneNumber) is not null)
                 {
                     throw new EntityAlreadyExistsException("Customer", "Customer with phonenumber "
-                        + customer.PhoneNumber + "already exists");
+                        + user.PhoneNumber + "already exists");
                 }
 
-                await _unitOfWork.CustomerRepository.AddAsync(customer);
+                await _unitOfWork.UserRepository.AddAsync(user);
                 user.Customer = customer;
                 // customer.User = user; EF manages the other-end of the relationship sinceboth entities are attached.
 
@@ -98,6 +58,7 @@ namespace TechAppointmentApp.Services
             {
                 _logger.LogError("{Message}{Exception}", ex.Message, ex.StackTrace);
             }
+            return user;
         }
 
         private User ExtractUser (CustomerSignupDTO signupDTO)
@@ -109,7 +70,8 @@ namespace TechAppointmentApp.Services
                 Email = signupDTO.Email!,
                 Firstname = signupDTO.Firstname!,
                 Lastname = signupDTO.Lastname!,
-                UserRole = (UserRole)signupDTO.UserRole!
+                UserRole = (UserRole)signupDTO.UserRole!,
+                PhoneNumber = signupDTO.PhoneNumber!,
             };
         }
 
@@ -117,7 +79,6 @@ namespace TechAppointmentApp.Services
         {
             return new Customer()
             {
-                PhoneNumber = signupDTO.PhoneNumber!,
                 ServiceId = (int?)signupDTO.Service,
             };
         }

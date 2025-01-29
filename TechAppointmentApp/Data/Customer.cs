@@ -11,5 +11,10 @@
         public virtual Service? Service { get; set; }
         public virtual User User { get; set; } = null!;
         public virtual ICollection<Appointment> Appointments { get; set; } = new HashSet<Appointment>();
+
+        public override string? ToString()
+        {
+            return $"{User!.Firstname}, {User!.Lastname}, {Address}, {Area!.AreaName}, {User!.PhoneNumber}, {Service!.UserService}";
+        }
     }
 }

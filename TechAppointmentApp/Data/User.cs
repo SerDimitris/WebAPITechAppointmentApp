@@ -1,4 +1,5 @@
-﻿using TechAppointmentApp.Core.Enums;
+﻿using System.Net;
+using TechAppointmentApp.Core.Enums;
 
 namespace TechAppointmentApp.Data
 {
@@ -14,5 +15,10 @@ namespace TechAppointmentApp.Data
         public UserRole UserRole { get; set; }
         public virtual Customer? Customer { get; set; }
         public virtual Technician? Technician { get; set; }
+
+        public override string? ToString()
+        {
+            return $"{Username}, {Email}, {Firstname}, {Lastname}, {PhoneNumber}, {UserRole}";
+        }
     }
 }
