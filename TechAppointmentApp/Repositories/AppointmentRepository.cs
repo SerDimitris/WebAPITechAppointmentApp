@@ -2,7 +2,7 @@
 
 namespace TechAppointmentApp.Repositories
 {
-    public class AppointmentRepository : BaseRepository<Appointment>, IAppointmentRepository
+    public class AppointmentRepository : IBaseRepository<Appointment>, IAppointmentRepository
     {
         public AppointmentRepository(TechAppointmentAppDbContext context) : base(context)
         {

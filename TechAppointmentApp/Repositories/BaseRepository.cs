@@ -17,7 +17,7 @@ namespace TechAppointmentApp.Repositories
 
         public virtual async Task AddAsync(T entity) => await dbset.AddAsync(entity);
 
-        public virtual async Task AddRangeAsync(IEnumerable<T> entities) => await dbset.AddRangeAsync(entities);
+        public async Task AddRangeAsync(IEnumerable<T> entities) => await dbset.AddRangeAsync(entities);
 
         public virtual Task UpdateAsync(T entity)
         {
@@ -39,6 +39,5 @@ namespace TechAppointmentApp.Repositories
         public virtual async Task<IEnumerable<T>> GetAllAsync() => await dbset.ToListAsync();
 
         public virtual async Task<int> GetCountAsync() => await dbset.CountAsync();
-
     }
 }

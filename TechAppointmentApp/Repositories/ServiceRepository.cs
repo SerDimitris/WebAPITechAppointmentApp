@@ -3,7 +3,7 @@ using TechAppointmentApp.Data;
 
 namespace TechAppointmentApp.Repositories
 {
-    public class ServiceRepository : BaseRepository<Service>, IServiceRepository
+    public class ServiceRepository : IBaseRepository<Service>, IServiceRepository
     {
         public ServiceRepository(TechAppointmentAppDbContext context) : base(context)
         {

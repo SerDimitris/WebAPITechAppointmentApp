@@ -7,6 +7,7 @@ namespace TechAppointmentApp.Repositories
         Task<User?> GetUserAsync(string username, string password);
         Task<User?> UpdateUserAsync(int id, User user);
         Task<User?> GetByUserName(string username);
+        Task<User?> GetByPhoneNumber(string phoneNumber);
         Task<List<User>> GetAllUsersFilteredPaginatedAsync(int pageNumber, int pageSize,
             List<Func<User, bool>> predicates);
 
