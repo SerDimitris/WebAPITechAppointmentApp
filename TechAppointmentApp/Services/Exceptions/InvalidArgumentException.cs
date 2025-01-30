@@ -1,4 +1,4 @@
-﻿namespace TechAppointmentApp.Exceptions
+﻿namespace TechAppointmentApp.Services.Exceptions
 {
     public class InvalidArgumentException : AppException
     {
