@@ -41,7 +41,7 @@ namespace TechAppointmentApp.Services
             User? user;
             try
             {
-                user = await _unitOfWork!.UserRepository.GetByUserNameAsync(username);
+                user = await _unitOfWork!.UserRepository.GetByUsernameAsync(username);
                 _logger!.LogInformation("{Message}", "User: " + user + " found and returned");
             }
             catch (Exception ex)
