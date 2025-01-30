@@ -13,16 +13,23 @@ namespace TechAppointmentApp.Repositories
 
         public async Task<Customer?> GetByPhoneNmumberAsync(string phoneNumber)
         {
-            return await context.Customers
+            return await _context.Customers
                 .Include(c => c.User)
                 .FirstOrDefaultAsync(c => c.User.PhoneNumber == phoneNumber);
+        }
+
+        public async Task<Customer?> GetCustomerByUsernameAsync(string username)
+        {
+            return await _context.Customers
+                .Include (c => c.User)
+                .FirstOrDefaultAsync(c => c.User.Username == username);
         }
 
         public async Task<List<Appointment>> GetCustomerAppoitmentsAsync(int id)
         {
             List<Appointment> appointments;
 
-            appointments = await context.Customers     
+            appointments = await _context.Customers     
                 .Where(c => c.Id == id)
                 .SelectMany(c => c.Appointments)
                 .ToListAsync();
@@ -32,22 +39,9 @@ namespace TechAppointmentApp.Repositories
 
         public async Task<List<User>> GetAllUsersCustomersAsync()
         {
-            var usersWithCustomerRole = await context.Users
+            var usersWithCustomerRole = await _context.Users
                 .Where(u => u.UserRole == UserRole.Customer)
                 .Include(u => u.Customer)
-                .ToListAsync();
-
-            return usersWithCustomerRole;
-        }
-
-        public async Task<List<User>> GetAllUsersCustomersPaginatedAsync(int pageNumber, int pageSize)
-        {
-            int skip = (pageNumber - 1) * pageSize;
-            var usersWithCustomerRole = await context.Users
-                .Where(u => u.UserRole == UserRole.Customer)
-                .Include(u => u.Customer)
-                .Skip(skip)
-                .Take(pageSize)
                 .ToListAsync();
 
             return usersWithCustomerRole;
@@ -55,12 +49,12 @@ namespace TechAppointmentApp.Repositories
 
         public async Task<PaginatedResult<User>> GetPaginatedUsersCustomersAsync(int pageNumber, int pageSize)
         {
-            var totalRecords = await context.Users
+            var totalRecords = await _context.Users
                 .Where(u => u.UserRole == UserRole.Customer)
                 .CountAsync();
 
             int skip = (pageNumber - 1) * pageSize;
-            var usersWithCustomerRole = await context.Users
+            var usersWithCustomerRole = await _context.Users
                 .Where(u => u.UserRole == UserRole.Customer)
                 .Include(u => u.Customer)
                 .Skip(skip)
@@ -79,13 +73,13 @@ namespace TechAppointmentApp.Repositories
         public async Task<PaginatedResult<User>> GetPaginatedUsersCustomersFilteredAsync(int pageNumber, int pageSize,
             List<Func<User, bool>> predicates)
         {
-            var totalRecords = await context.Users
+            var totalRecords = await _context.Users
                 .Where(u => u.UserRole == UserRole.Customer)
                 .CountAsync();
 
             int skip = (pageNumber - 1) * pageSize;
 
-            IQueryable <User> query = context.Users
+            IQueryable <User> query = _context.Users
                 .Where(u => u.UserRole == UserRole.Customer)
                 .Skip(skip)
                 .Take(pageSize);
@@ -108,10 +102,10 @@ namespace TechAppointmentApp.Repositories
 
         public async Task<List<Appointment>> GetCustomerAppoitmentByStatusAsync(int id, string status)
         {
-            return await context.Customers
+            return await _context.Customers
                 .Where(c => c.Id == id)
                 .SelectMany(c => c.Appointments)
-                .Where(s => s.Status == status)
+                .Where(s => s.Status.ToString() == status)
                 .ToListAsync();
         }
 

@@ -6,38 +6,37 @@ namespace TechAppointmentApp.Repositories
 {
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        protected readonly TechAppointmentAppDbContext context;
-        protected readonly DbSet<T> dbset;
+        protected readonly TechAppointmentAppDbContext _context;
+        private readonly DbSet<T> _dbset;
 
         public BaseRepository(TechAppointmentAppDbContext context)
         {
-            this.context = context;
-            dbset = context.Set<T>();
+            _context = context;
+            _dbset = _context.Set<T>();
         }
 
-        public virtual async Task AddAsync(T entity) => await dbset.AddAsync(entity);
+        public virtual async Task AddAsync(T entity) => await _dbset.AddAsync(entity);
 
-        public async Task AddRangeAsync(IEnumerable<T> entities) => await dbset.AddRangeAsync(entities);
+        public async Task AddRangeAsync(IEnumerable<T> entities) => await _dbset.AddRangeAsync(entities);
 
-        public virtual Task UpdateAsync(T entity)
+        public virtual void UpdateAsync(T entity)
         {
-            dbset.Attach(entity);
-            context.Entry(entity).State = EntityState.Modified;
-            return Task.CompletedTask;
+            _dbset.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
         }
 
         public virtual async Task<bool> DeleteAsync(int id)
         {
-            T? existingEntity = await GetAsync(id);
+            T? existingEntity = await _dbset.FindAsync(id);
             if (existingEntity is null) return false;
-            dbset.Remove(existingEntity);
+            _dbset.Remove(existingEntity);
             return true;
         }
 
-        public virtual async Task<T?> GetAsync(int id) => await dbset.FindAsync(id);
+        public virtual async Task<T?> GetAsync(int id) => await _dbset.FindAsync(id);
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync() => await dbset.ToListAsync();
+        public virtual async Task<IEnumerable<T>> GetAllAsync() => await _dbset.ToListAsync();
 
-        public virtual async Task<int> GetCountAsync() => await dbset.CountAsync();
+        public virtual async Task<int> GetCountAsync() => await _dbset.CountAsync();
     }
 }

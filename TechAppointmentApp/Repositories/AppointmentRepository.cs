@@ -14,7 +14,7 @@ namespace TechAppointmentApp.Repositories
         {
             int skip = (pageNumber - 1) * pageSize;
 
-            IQueryable<Appointment> query = context.Appointments
+            IQueryable<Appointment> query = _context.Appointments
                 .Where(a => a.CustomerId == id)
                 .OrderBy(a => a.AppointmentDate)
                 .Skip(skip)
@@ -28,7 +28,7 @@ namespace TechAppointmentApp.Repositories
         {
             int skip = (pageNumber -1) * pageSize;
 
-            IQueryable<Appointment> query = context.Appointments
+            IQueryable<Appointment> query = _context.Appointments
                 .Where(a => a.TechnicianId == id)
                 .OrderBy(a => a.AppointmentDate)
                 .Skip(skip)
@@ -42,7 +42,7 @@ namespace TechAppointmentApp.Repositories
             if (!Enum.TryParse<AppointmentStatus>(status, true, out AppointmentStatus parsedStatus))
                 throw new Exception("Invalid appointment status provided.");
 
-            return await context.Appointments
+            return await _context.Appointments
                 .Where(a => a.Status == parsedStatus)
                 .ToListAsync();
         }
@@ -52,7 +52,7 @@ namespace TechAppointmentApp.Repositories
             if (!Enum.TryParse<AppointmentStatus>(status, true, out AppointmentStatus parsedStatus))
                 throw new Exception("Invalid appointment status provided.");
 
-            return await context.Appointments
+            return await _context.Appointments
                 .Where(a => a.Status == parsedStatus)
                 .ToListAsync();
         }

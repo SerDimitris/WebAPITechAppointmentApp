@@ -13,16 +13,23 @@ namespace TechAppointmentApp.Repositories
 
         public async Task<Technician?> GetByPhoneNumberAsync(string phoneNumber)
         {
-            return await context.Technicians
+            return await _context.Technicians
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(t => t.User.PhoneNumber == phoneNumber);
+        }
+
+        public async Task<Technician?> GetTechnicianByUsernameAsync(string username)
+        {
+            return await _context.Technicians
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.User.Username == username);
         }
 
         public async Task<List<Appointment>> GetTechnicianAppointmensAsync(int id)
         {
             List<Appointment> appointments;
 
-            appointments = await context.Technicians
+            appointments = await _context.Technicians
                 .Where(t => t.Id == id)
                 .SelectMany(t =>  t.Appointments)
                 .ToListAsync();
@@ -31,7 +38,7 @@ namespace TechAppointmentApp.Repositories
         }
         public async Task<List<User>> GetAllUsersTechniciansAsync()
         {
-            var usersWithTechnicianRole = await context.Users
+            var usersWithTechnicianRole = await _context.Users
                 .Where (u => u.UserRole == UserRole.Technician)
                 .Include(u => u.Technician)
                 .ToListAsync ();
@@ -39,27 +46,15 @@ namespace TechAppointmentApp.Repositories
             return usersWithTechnicianRole;
         }
 
-        public async Task<List<User>> GetAllUsersTechniciansPaginatedAsync(int pageNumber, int pageSize)
-        {
-            int skip = (pageNumber - 1) * pageSize;
-            var usersWithTechnicianRole = await context.Users
-                .Where(u => u.UserRole == UserRole.Technician)
-                .Include(u => u.Technician)
-                .Skip(skip)
-                .Take(pageSize)
-                .ToListAsync();
-
-            return usersWithTechnicianRole;
-        }
 
         public async Task<PaginatedResult<User>> GetPaginatedUsersTechniciansAsync(int pageNumber, int pageSize)
         {
-            var totalRecords = await context.Users
+            var totalRecords = await _context.Users
                 .Where(u => u.UserRole == UserRole.Technician)
                 .CountAsync();
 
             int skip = (pageNumber - 1) * pageSize;
-            var usersWithTechnicianRole = await context.Users
+            var usersWithTechnicianRole = await _context.Users
                 .Where(u => u.UserRole == UserRole.Technician)
                 .Include(u => u.Technician)
                 .Skip(skip)
@@ -78,13 +73,13 @@ namespace TechAppointmentApp.Repositories
         public async Task<PaginatedResult<User>> GetPaginatedUsersTechniciansFilteredAsync(int pageNumber, int pageSize,
             List<Func<User, bool>> predicates)
         {
-            var totalRecords = await context.Users
+            var totalRecords = await _context.Users
                 .Where(u => u.UserRole == UserRole.Technician)
                 .CountAsync();
 
             int skip = (pageNumber - 1) * pageSize;
 
-            IQueryable<User> query = context.Users
+            IQueryable<User> query = _context.Users
                 .Where(u => u.UserRole == UserRole.Technician)
                 .Skip(skip)
                 .Take(pageSize);
@@ -107,10 +102,10 @@ namespace TechAppointmentApp.Repositories
 
         public async Task<List<Appointment>> GetTechnicianAppointmensByStatusAsync(int id, string status)
         {
-            return await context.Technicians
+            return await _context.Technicians
                 .Where(t => t.Id == id)
                 .SelectMany(t => t.Appointments)
-                .Where(t => t.Status == status)
+                .Where(t => t.Status.ToString() == status)
                 .ToListAsync();
         }
     }
