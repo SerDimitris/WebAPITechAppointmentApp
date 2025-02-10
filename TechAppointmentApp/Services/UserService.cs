@@ -2,6 +2,7 @@
 using TechAppointmentApp.Data;
 using TechAppointmentApp.DTO;
 using TechAppointmentApp.Repositories;
+using TechAppointmentApp.Services.Exceptions;
 
 namespace TechAppointmentApp.Services
 {
@@ -25,7 +26,7 @@ namespace TechAppointmentApp.Services
 
             try
             {
-                user = await _unitOfWork.UserRepository.GetUserAsync(credentials.Username!, credentials.Password!);
+                user = await _unitOfWork!.UserRepository.GetUserAsync(credentials.Username!, credentials.Password!);
                 _logger!.LogInformation("{Message}", "User: " + user + "found and returned.");   // ToDo toString
             }
             catch (Exception ex)
@@ -36,20 +37,20 @@ namespace TechAppointmentApp.Services
             return user;
         }
 
-        public async Task<User?> GetUserByUsernameAsync(string username)
+        public async Task DeleteUserAsync(int id)
         {
-            User? user;
+            bool deleted;
+
             try
             {
-                user = await _unitOfWork!.UserRepository.GetByUsernameAsync(username);
-                _logger!.LogInformation("{Message}", "User: " + user + " found and returned");
+                deleted = await _unitOfWork!.UserRepository.DeleteAsync(id);
+                if (!deleted) throw new UserNotFoundException("UserNotFound");
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _logger!.LogError("{Message}{Exception}", ex.Message, ex.StackTrace);
+                _logger!.LogError("{Message}{Exception}", e.Message, e.StackTrace);
                 throw;
             }
-            return user;
         }
     }
 }
