@@ -21,10 +21,10 @@ namespace TechAppointmentApp.Services
             _logger = logger;
         }
 
-        public async Task<Customer?> SignUpCustomerAsync(CustomerSignupDTO request)
+        public async Task<User?> SignUpCustomerAsync(CustomerSignupDTO request)
         {
-            Customer customer;
-            User user;
+            Customer? customer;
+            User? user;
 
             try
             {
@@ -53,9 +53,9 @@ namespace TechAppointmentApp.Services
                 // customer.User = user; EF manages the other-end of the relationship since both entities are attached.
 
                 await _unitOfWork.SaveAsync();
-                _logger!.LogInformation("{Message}", "Teacher: " + customer + " singed up successfully"); // ToDo toString
+                _logger!.LogInformation("{Message}", "Teacher: " + user + " singed up successfully"); // ToDo toString
 
-                return customer;
+                return user;
             }
             catch (Exception ex)
             {
@@ -93,16 +93,24 @@ namespace TechAppointmentApp.Services
                 Email = signupDTO.Email!,
                 Firstname = signupDTO.Firstname!,
                 Lastname = signupDTO.Lastname!,
-                UserRole = (UserRole)signupDTO.UserRole!,
+                UserRole = signupDTO.UserRole!,
                 PhoneNumber = signupDTO.PhoneNumber!,
             };
         }
 
         private Customer ExtractCustomer(CustomerSignupDTO signupDTO)
         {
+            var area =  _unitOfWork!.AreaRepository.GetAreaByName(signupDTO.Area!);
+            if (area == null) throw new AreaNotFoundException("Area", $"Area {signupDTO.Area} not found");
+
+            var service =  _unitOfWork!.ServiceRepository.GetServiceByNameAsync(signupDTO.Service.ToString()!);
+            if (service == null) throw new ServiceNotFoundException("Service", $"Service {signupDTO.Service.ToString()} not found");
+
             return new Customer()
             {
-                ServiceId = (int?)signupDTO.Service,
+                ServiceId = service.Id,
+                AreadId = area.Id,
+                Address = signupDTO.Address!
             };
         }
     }
